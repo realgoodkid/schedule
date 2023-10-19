@@ -33,6 +33,10 @@
             padding: 8px;
             text-align: center;
         }
+
+        select {
+            width: 60px;
+        }
     </style>
 </head>
 <body>
@@ -51,7 +55,7 @@
     <table id="availability-table">
         <tr>
             <th>Time Slot</th>
-            <th>Your Free Time</th>
+            <th>Your Availability</th>
         </tr>
         <!-- Time slots and availability cells will be added dynamically with JavaScript -->
     </table>
@@ -71,18 +75,20 @@
                 const timeCell = row.insertCell(0);
                 timeCell.textContent = slot;
                 const availabilityCell = row.insertCell(1);
-                availabilityCell.classList.add("availability-cell");
+                const availabilitySelect = document.createElement("select");
+                availabilitySelect.innerHTML = "<option value='yes'>Yes</option><option value='no'>No</option>";
+                availabilityCell.appendChild(availabilitySelect);
             }
         }
 
         // Function to convert time slots to the selected time zone
         function convertTimezone() {
             const selectedTimezone = document.getElementById("timezone").value;
-            const availabilityCells = document.querySelectorAll(".availability-cell");
+            const availabilityCells = document.querySelectorAll("select");
             for (let i = 0; i < timeSlots.length; i++) {
                 const istTime = new Date(`2023-10-24T${timeSlots[i]}:00`);
                 const viewerTime = istTime.toLocaleTimeString("en-US", { timeZone: selectedTimezone });
-                availabilityCells[i].textContent = viewerTime;
+                availabilityCells[i].setAttribute("data-time", viewerTime);
             }
         }
 
