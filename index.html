@@ -27,27 +27,24 @@
     <h1>Meeting Scheduler</h1>
     <label for="timezone">Select Timezone:</label>
     <select id="timezone">
-        <option value="Asia/Kolkata">Indian Standard Time (IST)</option>
-        <option value="America/New_York">New York (EST)</option>
-        <option value="Europe/London">London (GMT)</option>
-        <option value="Africa/Cairo">Cairo (EET)</option>
-        <option value="Africa/Johannesburg">Cape Town (SAST)</option>
-        <option value="Asia/Hong_Kong">Hong Kong (HKT)</option>
-        <option value="Australia/Sydney">Canberra (AEDT)</option>
-        <option value="America/Los_Angeles">San Francisco (PST)</option>
-        <option value="America/Chicago">Wisconsin (CST)</option>
+        <option value="IST">Indian Standard Time (IST)</option>
+        <option value="America/New_York">New York (NY)</option>
+        <option value="Europe/London">London</option>
+        <option value="Africa/Cairo">Cairo</option>
+        <option value="Africa/Johannesburg">Cape Town</option>
+        <option value="Asia/Hong_Kong">Hong Kong</option>
+        <option value="Australia/Sydney">Canberra</option>
+        <option value="America/Los_Angeles">San Francisco</option>
+        <option value="America/Chicago">Wisconsin</option>
     </select>
     <div id="tables"></div>
 
-    <script src="https://moment.github.io/luxon/global/luxon.js"></script>
     <script>
         // Function to generate the tables
         function generateTables() {
             const timezone = document.getElementById("timezone").value;
             const days = ["24th", "26th", "27th", "28th"];
-            const startHour = 7;
-            const endHour = 21; // 9:00 PM
-            const interval = 1; // 1-hour interval
+            const hours = Array.from({ length: 15 }, (_, i) => i + 7); // 7am to 9pm
 
             const tablesContainer = document.getElementById("tables");
             tablesContainer.innerHTML = "";
@@ -61,21 +58,16 @@
                 headerRow.innerHTML = `<th colspan="2">${day}</th>`;
                 thead.appendChild(headerRow);
 
-                for (let hour = startHour; hour < endHour; hour += interval) {
-                    const nextHour = hour + interval;
-                    const startTime = luxon.DateTime.fromObject({ hour, zone: 'UTC' }).setZone(timezone).toFormat('HH:mm');
-                    const endTime = luxon.DateTime.fromObject({ hour: nextHour, zone: 'UTC' }).setZone(timezone).toFormat('HH:mm');
-                    const date = day === "24th" ? "2023-10-24" : "2023-10-26";
-
+                for (const hour of hours) {
                     const timeRow = document.createElement("tr");
                     const timeCell = document.createElement("td");
-                    timeCell.textContent = `${startTime} to ${endTime}`;
+                    timeCell.textContent = `${hour}:00`;
                     timeRow.appendChild(timeCell);
 
                     const slotCell = document.createElement("td");
                     const checkbox = document.createElement("input");
                     checkbox.type = "checkbox";
-                    checkbox.name = `${date}_${hour}`;
+                    checkbox.name = `${day}_${hour}`;
                     slotCell.appendChild(checkbox);
                     timeRow.appendChild(slotCell);
 
