@@ -1,100 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Availability Scheduler</title>
+    <title>Meeting Scheduler</title>
     <style>
-        /* Your CSS code here */
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #3498db; /* Change this color to your preferred shade of blue */
         }
-
-        h1 {
-            color: #333;
-        }
-
-        .timezone-selector {
-            margin: 20px;
-        }
-
         table {
-            margin: 0 auto;
+            width: 100%;
+            border-collapse: collapse;
         }
-
-        th {
-            background-color: #333;
-            color: #fff;
-        }
-
         th, td {
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: center;
         }
-
+        th {
+            background-color: #f2f2f2;
+        }
         select {
-            width: 60px;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Availability Scheduler</h1>
-    <div class="timezone-selector">
-        <label for="timezone">Select Your Time Zone:</label>
-        <select id="timezone" onchange="convertTimezone()">
-            <option value="IST">Indian Standard Time (IST)</option>
-            <option value="EST">Eastern Standard Time (EST)</option>
-            <option value="PST">Pacific Standard Time (PST)</option>
-            <option value="CET">Central European Time (CET)</option>
-            <option value="AEST">Australian Eastern Standard Time (AEST)</option>
-            <!-- Add more time zones as needed -->
-        </select>
-    </div>
-    <table id="availability-table">
-        <tr>
-            <th>Time Slot</th>
-            <th>Your Availability</th>
-        </tr>
-        <!-- Time slots and availability cells will be added dynamically with JavaScript -->
-    </table>
+    <h1>Meeting Scheduler</h1>
+    <label for="timezone">Select Timezone:</label>
+    <select id="timezone">
+        <option value="IST">Indian Standard Time (IST)</option>
+        <!-- Add more timezone options here -->
+    </select>
+    <div id="tables"></div>
+
     <script>
-        // Your JavaScript code here
-        const timeSlots = [
-            "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
-            "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
-            "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM"
-        ];
+        // Function to generate the tables
+        function generateTables() {
+            const timezone = document.getElementById("timezone").value;
+            const days = ["24th", "26th", "27th", "28th"];
+            const hours = Array.from({ length: 15 }, (_, i) => i + 7); // 7am to 9pm
 
-        // Function to create table rows for time slots and availability cells
-        function createTable() {
-            const table = document.getElementById("availability-table");
-            for (const slot of timeSlots) {
-                const row = table.insertRow();
-                const timeCell = row.insertCell(0);
-                timeCell.textContent = slot;
-                const availabilityCell = row.insertCell(1);
-                const availabilitySelect = document.createElement("select");
-                availabilitySelect.innerHTML = "<option value='yes'>Yes</option><option value='no'>No</option>";
-                availabilityCell.appendChild(availabilitySelect);
-            }
+            const tablesContainer = document.getElementById("tables");
+            tablesContainer.innerHTML = "";
+
+            days.forEach(day => {
+                const table = document.createElement("table");
+                const thead = document.createElement("thead");
+                const tbody = document.createElement("tbody");
+
+                const headerRow = document.createElement("tr");
+                headerRow.innerHTML = `<th colspan="2">${day}</th>`;
+                thead.appendChild(headerRow);
+
+                for (const hour of hours) {
+                    const timeRow = document.createElement("tr");
+                    const timeCell = document.createElement("td");
+                    timeCell.textContent = `${hour}:00`;
+                    timeRow.appendChild(timeCell);
+
+                    const slotCell = document.createElement("td");
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.name = `${day}_${hour}`;
+                    slotCell.appendChild(checkbox);
+                    timeRow.appendChild(slotCell);
+
+                    tbody.appendChild(timeRow);
+                }
+
+                table.appendChild(thead);
+                table.appendChild(tbody);
+                tablesContainer.appendChild(table);
+            });
         }
 
-        // Function to convert time slots to the selected time zone
-        function convertTimezone() {
-            const selectedTimezone = document.getElementById("timezone").value;
-            const availabilityCells = document.querySelectorAll("select");
-            for (let i = 0; i < timeSlots.length; i++) {
-                const istTime = new Date(`2023-10-24T${timeSlots[i]}:00`);
-                const viewerTime = istTime.toLocaleTimeString("en-US", { timeZone: selectedTimezone });
-                availabilityCells[i].setAttribute("data-time", viewerTime);
-            }
-        }
+        // Add an event listener to regenerate the tables when the timezone is changed
+        document.getElementById("timezone").addEventListener("change", generateTables);
 
-        // Initialize the table and set default time zone
-        createTable();
-        convertTimezone();
+        // Initial table generation
+        generateTables();
     </script>
 </body>
 </html>
