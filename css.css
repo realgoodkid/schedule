@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+.timezone-selector {
+    margin: 20px;
+}
+
+table {
+    margin: 0 auto;
+}
+
+th {
+    background-color: #333;
+    color: #fff;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
